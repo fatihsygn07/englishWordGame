@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Vocabulary Game</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f8ff;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .game-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+        #question {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #answer {
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        #incorrect-words {
+            margin-top: 30px;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+        .btn-secondary-custom {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+        }
+        .btn-secondary-custom:hover {
+            background-color: #5a6268;
+            color: #fff;
+        }
+        #high-score, #total-words {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+        #score {
+            font-size: 16px;
+            text-align: center;
+        }
+        .text-success {
+            color: #28a745;
+        }
+        .text-danger {
+            color: #dc3545;
+        }
+        #incorrect-words-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        #incorrect-words-list li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        body {
+        background-color: #f8f9fa;
+      }
+
+      .card {
+        max-width: 500px;
+        margin: auto;
+        border: 1px solid #dee2e6;
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 game-container">
+                <h1 class="text-center">English Vocabulary Game</h1>
+                <p id="total-words" class="text-center"></p>
+                <p id="high-score" class="text-center"></p>
+                <div class="form-group">
+                    <h1 id="question" class="text-center"></h1>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="answer" class="form-control" placeholder="Your answer here">
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-custom" onclick="checkAnswer()">Submit Answer</button>
+                    <button class="btn btn-secondary-custom" id="restart-button">Restart</button>
+                    <button class="btn btn-danger btn-secondary-custom" id="end-button">End Game</button>
+                </div>
+                <p id="result" class="text-center"></p>
+                <p id="score" class="text-center"></p>
+                <div id="incorrect-words" class="mt-3" style="display:none;">
+                    <h3>Incorrect Answers</h3>
+                    <ul id="incorrect-words-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let words = [
+            { english: "Afraid", turkish: "korkmak" },
+            { english: "Honest", turkish: "dürüst" },
+            { english: "Crowded", turkish: "kalabalık" },
+            { english: "Scarf", turkish: "atkı" },
+            { english: "Poet", turkish: "şair" },
+            { english: "Octopus", turkish: "ahtapot" },
+            { english: "Alligator", turkish: "timsah" },
+            { english: "Flu", turkish: "grip" },
+            { english: "Plenty", turkish: "çokça" },
+            { english: "There is", turkish: "var (tekil ve sayılamayan)" },
+            { english: "There are", turkish: "var (çoğul)" },
+            { english: "There was", turkish: "vardı (tekil ve sayılamayan)" },
+            { english: "There were", turkish: "vardı (çoğul)" },
+            { english: "Any", turkish: "hiç" },
+            { english: "Enough", turkish: "yeterince/yeterli" },
+            { english: "Near", turkish: "yakın" },
+            { english: "Furniture", turkish: "mobilya" },
+            { english: "Road", turkish: "yol" },
+            { english: "Accident", turkish: "kaza" },
+            { english: "Few", turkish: "birkaç" },
+            { english: "Letter", turkish: "harf" },
+            { english: "Alphabet", turkish: "alfabe" },
+            { english: "Solar system", turkish: "güneş sistemi" },
+            { english: "Vase", turkish: "vazo" },
+            { english: "His/Her/Its", turkish: "onun" },
+            { english: "Our", turkish: "bizim" },
+            { english: "Their", turkish: "onların" },
+            { english: "Tail", turkish: "kuyruk" },
+            { english: "Fur", turkish: "kürk" },
+            { english: "Abroad", turkish: "yurtdışı" },
+            { english: "Naughty", turkish: "yaramaz" },
+            { english: "Celebrate", turkish: "kutlamak" },
+            { english: "Kitten", turkish: "kedi yavrusu" },
+            { english: "Pronouns", turkish: "zamirler" },
+            { english: "Me", turkish: "beni/bana" },
+            { english: "Mine", turkish: "benimki" },
+            { english: "You", turkish: "sen/seni/sana" },
+            { english: "Yours", turkish: "seninki" },
+            { english: "Him", turkish: "onu/ona" },
+            { english: "His", turkish: "onunki" },
+            { english: "Her", turkish: "onu/ona" },
+            { english: "Hers", turkish: "onunki" },
+            { english: "It", turkish: "onu/ona" },
+            { english: "Its", turkish: "onunki" },
+            { english: "Us", turkish: "bizi/bize" },
+            { english: "Ours", turkish: "bizimki" },
+            { english: "Them", turkish: "onları/onlara" },
+            { english: "Theirs", turkish: "onlarınki" },
+            { english: "Presentation", turkish: "sunum" },
+            { english: "Demonsrative pronouns", turkish: "işaret zamirleri" },
+            { english: "This", turkish: "bu (yakın/tekil)" },
+            { english: "That", turkish: "şu (uzak/tekil)" },
+            { english: "These", turkish: "bunlar (yakın/çoğul)" },
+            { english: "Those", turkish: "şunlar (uzak/çoğul)" },
+            { english: "Shelf", turkish: "raf" },
+            { english: "Scary", turkish: "korkutucu" }
+        ];
+
+        let askedWords = new Set();
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let highScore = localStorage.getItem('highScore') || 0;
+        let currentQuestionType = 'english'; // Başlangıçta İngilizce sorulacak
+        let incorrectWords = new Map(); // Yanlış cevaplanan kelimeleri ve cevapları saklar
+
+        document.getElementById('total-words').textContent = `Total Words: ${words.length * 2}`;
+        document.getElementById('high-score').textContent = `High Score: ${highScore}`;
+
+        function showQuestion() {
+            if (askedWords.size >= words.length * 2) {
+                document.getElementById('question').textContent = 'All words have been asked.';
+                document.getElementById('answer').style.display = 'none';
+                document.getElementById('result').textContent = `Correct Answers: ${correctAnswers}, Incorrect Answers: ${incorrectAnswers}`;
+                document.getElementById('score').textContent = '';
+                
+                if (correctAnswers > highScore) {
+                    highScore = correctAnswers;
+                    localStorage.setItem('highScore', highScore);
+                    document.getElementById('high-score').textContent = `High Score: ${highScore}`;
+                }
+                return;
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * words.length);
+            } while (askedWords.has(randomIndex * 2 + (currentQuestionType === 'turkish' ? 1 : 0)));
+
+            askedWords.add(randomIndex * 2 + (currentQuestionType === 'turkish' ? 1 : 0));
+
+            const randomWord = words[randomIndex];
+            const questionElement = document.getElementById('question');
+            const answerElement = document.getElementById('answer');
+            const resultElement = document.getElementById('result');
+            const scoreElement = document.getElementById('score');
+
+            if (currentQuestionType === 'english') {
+                questionElement.textContent = randomWord.english;
+                answerElement.dataset.answer = randomWord.turkish;
+            } else {
+                questionElement.textContent = randomWord.turkish;
+                answerElement.dataset.answer = randomWord.english;
+            }
+
+            answerElement.value = '';
+            resultElement.textContent = '';
+            scoreElement.textContent = `Correct Answers: ${correctAnswers}, Incorrect Answers: ${incorrectAnswers}`;
+            
+            // Sorunun türünü değiştir
+            currentQuestionType = currentQuestionType === 'english' ? 'turkish' : 'english';
+        }
+
+        function normalizeText(text) {
+            return text.replace(/\(.*?\)/g, '').trim().toLowerCase();
+        }
+
+        function checkAnswer() {
+            const answerElement = document.getElementById('answer');
+            const resultElement = document.getElementById('result');
+
+            const userAnswer = normalizeText(answerElement.value);
+            const correctAnswer = normalizeText(answerElement.dataset.answer);
+
+            // Doğru cevapları ayırmak için split kullanılır
+            const correctAnswersArray = correctAnswer.split('/').map(a => a.trim().toLowerCase());
+
+            if (correctAnswersArray.includes(userAnswer)) {
+                correctAnswers++;
+                resultElement.textContent = 'Correct!';
+                resultElement.classList.remove('text-danger');
+                resultElement.classList.add('text-success');
+            } else {
+                incorrectAnswers++;
+                resultElement.textContent = `Wrong! Correct answer(s) are: ${correctAnswersArray.join(', ')}`;
+                resultElement.classList.remove('text-success');
+                resultElement.classList.add('text-danger');
+
+                // Yanlış cevaplanan kelimeleri kaydet
+                const questionText = document.getElementById('question').textContent;
+                incorrectWords.set(questionText, correctAnswer);
+            }
+
+            setTimeout(showQuestion, 2000);
+        }
+
+        // Enter tuşuna basıldığında checkAnswer fonksiyonunu çağır
+        document.getElementById('answer').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                checkAnswer();
+            }
+        });
+
+        document.getElementById('restart-button').addEventListener('click', function() {
+            askedWords.clear();
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            incorrectWords.clear();
+            currentQuestionType = 'english'; // Yeniden başlatıldığında İngilizce sorulacak
+            document.getElementById('answer').style.display = 'block';
+            showQuestion();
+        });
+
+        document.getElementById('end-button').addEventListener('click', function() {
+            const incorrectWordsList = document.getElementById('incorrect-words-list');
+            incorrectWordsList.innerHTML = ''; // Önceki listeyi temizle
+
+            incorrectWords.forEach((answer, question) => {
+                const li = document.createElement('li');
+                li.textContent = `${question}: ${answer}`;
+                incorrectWordsList.appendChild(li);
+            });
+
+            document.getElementById('incorrect-words').style.display = 'block';
+            document.getElementById('answer').style.display = 'none';
+            document.getElementById('result').textContent = `Correct Answers: ${correctAnswers}, Incorrect Answers: ${incorrectAnswers}`;
+
+            if (correctAnswers > highScore) {
+                highScore = correctAnswers;
+                localStorage.setItem('highScore', highScore);
+                document.getElementById('high-score').textContent = `High Score: ${highScore}`;
+            }
+        });
+
+        // İlk soruyu göstermek için
+        showQuestion();
+    </script>
+</body>
+</html>
