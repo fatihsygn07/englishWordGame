@@ -179,8 +179,8 @@
         let correctAnswers = 0;
         let incorrectAnswers = 0;
         let highScore = localStorage.getItem('highScore') || 0;
-        let currentQuestionType = 'english'; // Başlangıçta İngilizce sorulacak
-        let incorrectWords = new Map(); // Yanlış cevaplanan kelimeleri ve cevapları saklar
+        let currentQuestionType = 'english';
+        let incorrectWords = new Map();
 
         document.getElementById('total-words').textContent = `Total Words: ${words.length * 2}`;
         document.getElementById('high-score').textContent = `High Score: ${highScore}`;
@@ -225,7 +225,6 @@
             resultElement.textContent = '';
             scoreElement.textContent = `Correct Answers: ${correctAnswers}, Incorrect Answers: ${incorrectAnswers}`;
             
-            // Sorunun türünü değiştir
             currentQuestionType = currentQuestionType === 'english' ? 'turkish' : 'english';
         }
 
@@ -240,7 +239,6 @@
             const userAnswer = normalizeText(answerElement.value);
             const correctAnswer = normalizeText(answerElement.dataset.answer);
 
-            // Doğru cevapları ayırmak için split kullanılır
             const correctAnswersArray = correctAnswer.split('/').map(a => a.trim().toLowerCase());
 
             if (correctAnswersArray.includes(userAnswer)) {
@@ -253,8 +251,7 @@
                 resultElement.textContent = `Wrong! Correct answer(s) are: ${correctAnswersArray.join(', ')}`;
                 resultElement.classList.remove('text-success');
                 resultElement.classList.add('text-danger');
-
-                // Yanlış cevaplanan kelimeleri kaydet
+                
                 const questionText = document.getElementById('question').textContent;
                 incorrectWords.set(questionText, correctAnswer);
             }
@@ -262,7 +259,6 @@
             setTimeout(showQuestion, 2000);
         }
 
-        // Enter tuşuna basıldığında checkAnswer fonksiyonunu çağır
         document.getElementById('answer').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -275,14 +271,14 @@
             correctAnswers = 0;
             incorrectAnswers = 0;
             incorrectWords.clear();
-            currentQuestionType = 'english'; // Yeniden başlatıldığında İngilizce sorulacak
+            currentQuestionType = 'english';
             document.getElementById('answer').style.display = 'block';
             showQuestion();
         });
 
         document.getElementById('end-button').addEventListener('click', function() {
             const incorrectWordsList = document.getElementById('incorrect-words-list');
-            incorrectWordsList.innerHTML = ''; // Önceki listeyi temizle
+            incorrectWordsList.innerHTML = '';
 
             incorrectWords.forEach((answer, question) => {
                 const li = document.createElement('li');
@@ -301,7 +297,6 @@
             }
         });
 
-        // İlk soruyu göstermek için
         showQuestion();
     </script>
 </body>
